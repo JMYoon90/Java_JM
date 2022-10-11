@@ -179,6 +179,12 @@ public class BlogDaoImpl implements BlogDao {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				closeResources(conn, stmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
         return result;
     }
