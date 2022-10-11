@@ -17,12 +17,13 @@ import javax.swing.table.DefaultTableModel;
 import edu.java.ojdbc.controller.BlogDaoImpl;
 import edu.java.ojdbc.model.Blog;
 import edu.java.ojdbc.view.BlogCreateFrame.OnBlogInsertListener;
+import edu.java.ojdbc.view.BlogDetailFrame.OnBlogUpdateListener;
 
 import static edu.java.ojdbc.model.Blog.Entity.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class BlogMain implements OnBlogInsertListener {
+public class BlogMain implements OnBlogInsertListener, OnBlogUpdateListener {
     // 메인 화면에서 보여줄 JTable의 컬럼 이름들
     private static final String[] COLUMN_NAMES = {
             COL_BLOG_NO, COL_TITLE, COL_AUTHOR, COL_MODIFIED_DATE
@@ -101,6 +102,13 @@ public class BlogMain implements OnBlogInsertListener {
         buttonPanel.add(btnCreate);
         
         JButton btnRead = new JButton("상세보기");
+        btnRead.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		showDetailFrame(); 
+        		
+        		
+        	}
+        });
         btnRead.setFont(new Font("D2Coding", Font.PLAIN, 24));
         buttonPanel.add(btnRead);
         
@@ -121,7 +129,25 @@ public class BlogMain implements OnBlogInsertListener {
         scrollPane.setViewportView(table);
     }
 
-    private void deleteBlog() {
+    private void showDetailFrame() {
+    	int row = table.getSelectedRow();
+    	if(row == -1) {
+    		JOptionPane.showMessageDialog(frame, // parentComponent 
+    				"테이블의 행을 먼저 선택하세요.",  // message
+    				"Error",  // title
+    				JOptionPane.ERROR_MESSAGE); // messageType
+    		return;
+    	}
+    	
+    	Integer blogNo = (Integer) model.getValueAt(row, 0);
+    	System.out.println("blogNo = " + blogNo);
+    	
+    	BlogDetailFrame.newBlogDetailFrame(frame, blogNo, BlogMain.this); // BlogMain.this = this <= BlogMain안에 존재하기 떄문에
+    	
+		
+	}
+
+	private void deleteBlog() {
     	int row = table.getSelectedRow(); // 테이블에서 선택된 행 인덱스
     	if(row == -1) { // JTable에서 선택된 행이 없는 경우, 
     		JOptionPane.showMessageDialog(frame, // parentComponent
@@ -159,5 +185,11 @@ public class BlogMain implements OnBlogInsertListener {
     public void onBlogInserted() {
         initializeTable();
     }
+
+	@Override // BlogDetailFrame.OnBlogUpdateListener 인터페이스 메서드 구현.
+	public void onBlogUpdated() {
+		initializeTable();
+		
+	}
     
 }

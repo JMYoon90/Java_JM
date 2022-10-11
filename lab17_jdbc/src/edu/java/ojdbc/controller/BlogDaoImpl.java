@@ -106,7 +106,7 @@ public class BlogDaoImpl implements BlogDao {
 			stmt.setInt(1, blogNo);
 			
 			rs = stmt.executeQuery();
-			if (rs.next()) { // 검색 결과에서 row 데이터가 있으면
+			if (rs.next()) { // 검색 결과에서 row 데이터가 있으면 , 검색 결과가 여러개일땐 while, 한개일땐 if
 				Integer no = rs.getInt(COL_BLOG_NO);
 				String title = rs.getString(COL_TITLE);
 				String content = rs.getString(COL_CONTENT);
