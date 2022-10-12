@@ -4,8 +4,6 @@ import java.util.List;
 
 import edu.java.ojdbc.model.Blog;
 
-import edu.java.ojdbc.model.Blog.Entity.*;
-
 public interface BlogDao {
 
     List<Blog> select(); // SQL_SELECT_ALL

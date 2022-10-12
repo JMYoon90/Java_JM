@@ -1,34 +1,32 @@
 package edu.java.ojdbc.view;
 
-import java.awt.EventQueue;
+import static edu.java.ojdbc.model.Blog.Entity.COL_AUTHOR;
+import static edu.java.ojdbc.model.Blog.Entity.COL_BLOG_NO;
+import static edu.java.ojdbc.model.Blog.Entity.COL_MODIFIED_DATE;
+import static edu.java.ojdbc.model.Blog.Entity.COL_TITLE;
 
+import java.awt.BorderLayout;
+import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import javax.swing.JButton;
-import java.awt.Font;
-import java.util.List;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import edu.java.ojdbc.controller.BlogDaoImpl;
 import edu.java.ojdbc.model.Blog;
 import edu.java.ojdbc.view.BlogCreateFrame.OnBlogInsertListener;
 import edu.java.ojdbc.view.BlogDetailFrame.OnBlogUpdateListener;
-
-import static edu.java.ojdbc.controller.JdbcSql.*;
-import static edu.java.ojdbc.model.Blog.Entity.*;
-import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.awt.event.ActionEvent;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JTextField;
 
 public class BlogMain implements OnBlogInsertListener, OnBlogUpdateListener {
     // 메인 화면에서 보여줄 JTable의 컬럼 이름들
