@@ -91,6 +91,16 @@ public class ContactMain06 implements OnContactCreateListener, OnContactUpdateLi
 				
 			}
 		});
+		
+		JButton btnLeadAll = new JButton("전체보기");
+		btnLeadAll.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				initializeTable();
+			}
+		});
+		btnLeadAll.setFont(new Font("D2Coding", Font.PLAIN, 15));
+		panel.add(btnLeadAll);
 		btnCreate.setFont(new Font("D2Coding", Font.PLAIN, 15));
 		panel.add(btnCreate);
 		
