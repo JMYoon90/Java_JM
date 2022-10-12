@@ -19,9 +19,16 @@ import edu.java.ojdbc.model.Blog;
 import edu.java.ojdbc.view.BlogCreateFrame.OnBlogInsertListener;
 import edu.java.ojdbc.view.BlogDetailFrame.OnBlogUpdateListener;
 
+import static edu.java.ojdbc.controller.JdbcSql.*;
 import static edu.java.ojdbc.model.Blog.Entity.*;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.awt.event.ActionEvent;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 
 public class BlogMain implements OnBlogInsertListener, OnBlogUpdateListener {
     // 메인 화면에서 보여줄 JTable의 컬럼 이름들
@@ -32,8 +39,10 @@ public class BlogMain implements OnBlogInsertListener, OnBlogUpdateListener {
     private JFrame frame;
     private JTable table;
     private DefaultTableModel model;
+    private JComboBox<String> comboBox;
     
     private BlogDaoImpl dao;
+    private JTextField textKeyword;
     
 
     /**
@@ -98,6 +107,16 @@ public class BlogMain implements OnBlogInsertListener, OnBlogUpdateListener {
                 BlogCreateFrame.newBlogCreateFrame(frame, BlogMain.this);
             }
         });
+        
+        JButton btnLeadAll = new JButton("전체 보기");
+        btnLeadAll.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		initializeTable();
+        	}
+        });
+        btnLeadAll.setFont(new Font("D2Coding", Font.PLAIN, 24));
+        buttonPanel.add(btnLeadAll);
         btnCreate.setFont(new Font("D2Coding", Font.PLAIN, 24));
         buttonPanel.add(btnCreate);
         
@@ -127,9 +146,61 @@ public class BlogMain implements OnBlogInsertListener, OnBlogUpdateListener {
         
         table = new JTable();
         scrollPane.setViewportView(table);
+        
+        JPanel searchPanel = new JPanel();
+        frame.getContentPane().add(searchPanel, BorderLayout.SOUTH);
+        
+        comboBox = new JComboBox();
+        String[] comboBoxItems = {"제목", "내용", "제목 + 내용", "작성자"};
+        DefaultComboBoxModel<String> comboBoxModel= new DefaultComboBoxModel<>(comboBoxItems);
+        comboBox.setModel(comboBoxModel);
+        comboBox.setSelectedIndex(0);
+        searchPanel.add(comboBox);
+        
+        textKeyword = new JTextField();
+        searchPanel.add(textKeyword);
+        textKeyword.setColumns(10);
+        
+        JButton btnSearch = new JButton("검  색");
+        btnSearch.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		searchBlogsByKeyword();
+        	}
+        });
+        searchPanel.add(btnSearch);
     }
 
-    private void showDetailFrame() {
+    private void searchBlogsByKeyword() {
+    	String keyword = textKeyword.getText();
+    	if(keyword.equals("")) { // 검색어 JTextField가 비어 있으면
+    		JOptionPane.showMessageDialog(frame, // parentComponent
+    				"검색어를 입력하세요.", // message
+    				"Warning", // title
+    				JOptionPane.WARNING_MESSAGE); // messageType
+    		return;
+    	}
+    	
+    	
+    	int type = comboBox.getSelectedIndex(); 
+    	System.out.println("type = " + type + ", keyword = " + keyword);
+    	
+    	// DAO 에 검색 타입과 검색어를 argument로 갖는 검색 메서드 호출.
+    	List<Blog> list = dao.select(type, keyword);
+    	
+    	model = new DefaultTableModel(null,  COLUMN_NAMES);
+    	table.setModel(model);
+    	for (Blog b : list) {
+    		Object[] row = {
+    				b.getBlogNo(), b.getTitle(), b.getAuthor(), b.getModifiedDate()
+			};
+    		model.addRow(row);
+    	}
+    	
+		
+	}
+
+	private void showDetailFrame() {
     	int row = table.getSelectedRow();
     	if(row == -1) {
     		JOptionPane.showMessageDialog(frame, // parentComponent 

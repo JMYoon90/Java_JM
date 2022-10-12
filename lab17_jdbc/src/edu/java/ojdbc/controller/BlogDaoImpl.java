@@ -217,4 +217,65 @@ public class BlogDaoImpl implements BlogDao {
         return result;
     }
 
+	@Override
+	public List<Blog> select(int type, String keyword) {
+		List<Blog> list = new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			conn= getConnection();
+			
+			switch (type) {
+			case 0: // 제목 검색
+				System.out.println(SQL_SELECT_BY_TITLE);
+				stmt = conn.prepareStatement(SQL_SELECT_BY_TITLE);
+				stmt.setString(1, "%" + keyword.toLowerCase() + "%");
+				break;
+			case 1: // 내용 검색
+				System.out.println(SQL_SELECT_BY_CONTENT);
+				stmt = conn.prepareStatement(SQL_SELECT_BY_CONTENT);
+				stmt.setString(1, "%" + keyword.toLowerCase() + "%");
+				break;
+			case 2: // 제목 + 내용 검색
+				System.out.println(SQL_SELECT_BY_TITLE_OR_CONTENT);
+				stmt = conn.prepareStatement(SQL_SELECT_BY_TITLE_OR_CONTENT);
+				stmt.setString(1, "%" + keyword.toLowerCase() + "%");
+				stmt.setString(2, "%" + keyword.toLowerCase() + "%");
+				break;
+			case 3: // 작성자 검색
+				System.out.println(SQL_SELECT_BY_AUTHOR);
+				stmt = conn.prepareStatement(SQL_SELECT_BY_AUTHOR);
+				stmt.setString(1, "%" + keyword.toLowerCase() + "%");
+				break;
+			default:
+			}
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				Integer blogNo = rs.getInt(COL_BLOG_NO);
+				String title = rs.getString(COL_TITLE);
+				String content = rs.getString(COL_CONTENT);
+				String author = rs.getString(COL_AUTHOR);
+				LocalDateTime create = rs.getTimestamp(COL_CREATED_DATE).toLocalDateTime();
+				LocalDateTime modified = rs.getTimestamp(COL_MODIFIED_DATE).toLocalDateTime();
+				
+				Blog blog = new Blog(blogNo, title, content, author, create, modified);
+				list.add(blog);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeResources(conn, stmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+		return list;
+	}
+
 }
