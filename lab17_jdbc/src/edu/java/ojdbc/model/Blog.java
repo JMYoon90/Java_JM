@@ -2,8 +2,6 @@ package edu.java.ojdbc.model;
 
 import java.time.LocalDateTime;
 
-import oracle.net.aso.c;
-
 // 데이터베이스에 생성된 테이블(BLOGS)의 각 컬럼들을 필드(멤버 변수)로 선언한 모델 클래스.
 public class Blog {
     
