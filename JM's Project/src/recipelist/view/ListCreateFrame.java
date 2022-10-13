@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import recipelist.controller.RecipeListDaoImpl;
 import recipelist.model.RecipeList;
 
 import javax.swing.JLabel;
@@ -21,6 +22,8 @@ import java.awt.event.ActionEvent;
 
 public class ListCreateFrame extends JFrame {
 
+	private RecipeListDaoImpl dao;
+	
 	private JPanel contentPane;
 	private JTextField textProduct;
 	private JTextField textModifiedDate;
@@ -100,6 +103,7 @@ public class ListCreateFrame extends JFrame {
 		contentPane.add(lblModifiedDate);
 		
 		textModifiedDate = new JTextField();
+		textModifiedDate.setEditable(false);
 		textModifiedDate.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		textModifiedDate.setColumns(10);
 		textModifiedDate.setBounds(634, 10, 138, 30);
@@ -362,6 +366,7 @@ public class ListCreateFrame extends JFrame {
 		String cookingMethod = textCookMethod.getText();
 		
 		RecipeList recipelist = new RecipeList(null, productName, null, productWeight, null, ectText, cookingMethod, ingredientName);
+		int result = dao.insert(recipelist);
 		
 		// TODO: int result = dao
 		
