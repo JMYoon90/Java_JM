@@ -17,7 +17,7 @@ public interface RecipeListSql {
 	
 	// 새 레시피 저장.(제품명, 분류, 저장일, 재료명, 제품중량, 기타재료, 판서순)
 	String SQL_INSERT = String.format(
-			"insert all into %s (%s, %s, %s, %s, %s, %s) values (?, ?, ?, ?, ?, ?, ?)",
+			"insert all into %s (%s, %s, %s, %s, %s, %s) values (?, ?, ?, ?, ?, ?)",
 			TBL_RECIPELIST, COL_PRODUCT_NAME, COL_GROUP, COL_INGREDIENT_NAME, 
 			COL_PRODUCT_WEIGHT, COL_ETC_TEXT, COL_COOKING_METHOD);
 	// 레시피 글 업데이트.(제품명, 분류, 저장일, 재료명, 제품중량, 기타재료, 판서순)
