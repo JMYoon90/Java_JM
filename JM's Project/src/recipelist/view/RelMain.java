@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
-import recipelist.controller.RecipeListDaoImpl;
-import recipelist.model.RecipeList;
+import recipelist.controller.RecipeMainDaoImpl;
+import recipelist.model.RecipeMain;
 
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -20,18 +20,21 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import static recipelist.model.RecipeList.Entity.*;
+import static recipelist.model.RecipeMain.Entity.*;
 import javax.swing.JComboBox;
 
-public class RelMain {
+import recipelist.view.ListCreateFrame.OnListInsertListener;
+import recipelist.view.ListUpdateFrame.OnRecipeUpdateListener;
+
+public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
 	private static final String[] COLUMN_NAMES = {
-			COL_RECIPE_NO, COL_PRODUCT_NAME, COL_GROUP, COL_MODIFIED_DATE
+			COL_PRODUCT_NO, COL_PRODUCT_NAME, COL_PRODUCT_CLASS, COL_MODIFIED_DATE
 	};
 
 	private JFrame frame;
 	private JTable table;
 	private JTextField textKeyword;
-	private RecipeListDaoImpl dao;
+	private RecipeMainDaoImpl dao;
 	private DefaultTableModel model;
 	
 
@@ -56,7 +59,7 @@ public class RelMain {
 	 */
 	public RelMain() {
 		initialize();
-		dao = RecipeListDaoImpl.getInstance();
+		dao = RecipeMainDaoImpl.getInstance();
 		initializeTable();
 		
 	}
@@ -65,10 +68,10 @@ public class RelMain {
 		model = new DefaultTableModel(null, COLUMN_NAMES);
 		table.setModel(model);
 		
-		List<RecipeList> list = dao.select();
-		for (RecipeList r : list) {
+		List<RecipeMain> list = dao.select();
+		for (RecipeMain r : list) {
 			Object[] row = {
-					r.getProductNo(), r.getProductName(), r.getProductGroup(), r.getModifiedDate()
+					r.getProductNo(), r.getProductName(), r.getProductClass(), r.getModifiedDate()
 			};
 			model.addRow(row);
 		}
@@ -85,6 +88,11 @@ public class RelMain {
 		frame.getContentPane().setLayout(null);
 		
 		JButton btnCreateRecipe = new JButton("레시피작성");
+		btnCreateRecipe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ListCreateFrame.newListCreateFrame(frame, RelMain.this);
+			}
+		});
 		btnCreateRecipe.setFont(new Font("D2Coding", Font.PLAIN, 13));
 		btnCreateRecipe.setBounds(32, 21, 130, 25);
 		frame.getContentPane().add(btnCreateRecipe);
@@ -95,6 +103,12 @@ public class RelMain {
 		frame.getContentPane().add(btnCostCreate);
 		
 		JButton btnDetailRecipe = new JButton("레시피 상세보기");
+		btnDetailRecipe.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showDetailFrame();
+			}
+		});
 		btnDetailRecipe.setFont(new Font("D2Coding", Font.PLAIN, 13));
 		btnDetailRecipe.setBounds(174, 21, 130, 25);
 		frame.getContentPane().add(btnDetailRecipe);
@@ -149,6 +163,24 @@ public class RelMain {
 		panel.add(btnNewButton);
 	}
 
+	protected void showDetailFrame() {
+		int row = table.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(frame,
+					"수정할 레시피를 선택하세요.",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		Integer listNo = (Integer) model.getValueAt(row, 0);
+		
+		ListUpdateFrame.newRecipeDetailFrame(frame, listNo, RelMain.this);
+		
+		
+		
+	}
+
 	private void deleteRecipe() {
 		int row = table.getSelectedRow();
 		if(row == -1) {
@@ -179,5 +211,15 @@ public class RelMain {
 			}
 			
 		}
+	}
+
+	@Override
+	public void OnListInserted() {
+		initializeTable();
+	}
+
+	@Override
+	public void OnRecipeUpdated() {
+		initializeTable();
 	}
 }

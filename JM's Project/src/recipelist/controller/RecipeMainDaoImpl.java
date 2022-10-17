@@ -1,8 +1,8 @@
 package recipelist.controller;
 
 import static recipelist.ojdbc.OracleJdbc.*;
-import static recipelist.controller.RecipeListSql.*;
-import static recipelist.model.RecipeList.Entity.*;
+import static recipelist.controller.RecipeMainSql.*;
+import static recipelist.model.RecipeMain.Entity.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,18 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oracle.jdbc.driver.OracleDriver;
-import recipelist.model.RecipeList;
+import recipelist.model.RecipeMain;
 
 
-public class RecipeListDaoImpl implements RecipeListDao {
+public class RecipeMainDaoImpl implements RecipeMainDao {
 
-	private static RecipeListDaoImpl instance = null;
+	private static RecipeMainDaoImpl instance = null;
 	
-	private RecipeListDaoImpl() {}
+	private RecipeMainDaoImpl() {}
 	
-	public static RecipeListDaoImpl getInstance() {
+	public static RecipeMainDaoImpl getInstance() {
 		if (instance == null) {
-			instance =  new RecipeListDaoImpl();
+			instance =  new RecipeMainDaoImpl();
 		}
 		
 		return instance;
@@ -50,8 +50,8 @@ public class RecipeListDaoImpl implements RecipeListDao {
     }
 	
 	@Override
-	public List<RecipeList> select() {
-		List<RecipeList> list = new ArrayList<>();
+	public List<RecipeMain> select() {
+		List<RecipeMain> list = new ArrayList<>();
 		
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -60,22 +60,19 @@ public class RecipeListDaoImpl implements RecipeListDao {
 		try {
 			conn = getConnection();
 			
-			System.out.println(SQL_SELECT_ALL);
 			stmt = conn.prepareStatement(SQL_SELECT_ALL);
 			
 			rs = stmt.executeQuery();
 			while (rs.next()) {
-				Integer productNo = rs.getInt(COL_RECIPE_NO);
+				Integer productNo = rs.getInt(COL_PRODUCT_NO);
 				String productName = rs.getString(COL_PRODUCT_NAME);
-				String productGroup = rs.getString(COL_GROUP);
-				Integer productWeight = rs.getInt(COL_PRODUCT_WEIGHT);
+				String productClass = rs.getString(COL_PRODUCT_CLASS);
 				LocalDateTime modifiedDate = rs.getTimestamp(COL_MODIFIED_DATE).toLocalDateTime();
-				String ectText = rs.getString(COL_ETC_TEXT);
-				String cookingMethod = rs.getString(COL_COOKING_METHOD);
-				String ingredientName = rs.getString(COL_INGREDIENT_NAME);
+				String ectText = rs.getString(COL_ETC_INGRE);
+				String cookingMethod = rs.getString(COL_MAIN_CONTENT);
 				
-				RecipeList recipelist = new RecipeList(productNo, productName, productGroup, productWeight, modifiedDate, ectText, cookingMethod, ingredientName);
-				list.add(recipelist);
+				RecipeMain recipemain = new RecipeMain(productNo, productName, productClass, modifiedDate, ectText, cookingMethod);
+				list.add(recipemain);
 			}
 			
 			
@@ -83,14 +80,20 @@ public class RecipeListDaoImpl implements RecipeListDao {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				closeResources(conn, stmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return list;
 	}
 
 	@Override
-	public RecipeList select(Integer productNo) {
-		RecipeList recipelist = null;
+	public RecipeMain select(Integer productNo) {
+		RecipeMain recipemain = null;
 		
 		Connection conn = null;
 		PreparedStatement stmt = null;
@@ -106,14 +109,12 @@ public class RecipeListDaoImpl implements RecipeListDao {
 			if(rs.next()) {
 				
 				String productName = rs.getString(COL_PRODUCT_NAME);
-				String productGroup = rs.getString(COL_GROUP);
-				Integer productWeight = rs.getInt(COL_PRODUCT_WEIGHT);
+				String productClass = rs.getString(COL_PRODUCT_CLASS);
 				LocalDateTime modifiedDate = rs.getTimestamp(COL_MODIFIED_DATE).toLocalDateTime();
-				String ectText = rs.getString(COL_ETC_TEXT);
-				String cookingMethod = rs.getString(COL_COOKING_METHOD);
-				String ingredientName = rs.getString(COL_INGREDIENT_NAME);
+				String ectIngre = rs.getString(COL_ETC_INGRE);
+				String mainContent = rs.getString(COL_MAIN_CONTENT);
 				
-				recipelist = new RecipeList(productNo, productName, productGroup, productWeight, modifiedDate, ectText, cookingMethod, ingredientName);
+				recipemain = new RecipeMain(productNo, productName, productClass, modifiedDate, ectIngre, mainContent);
 				
 			}
 		} catch (SQLException e) {
@@ -125,11 +126,11 @@ public class RecipeListDaoImpl implements RecipeListDao {
 				e.printStackTrace();
 			}
 		}
-		return recipelist;
+		return recipemain;
 	}
 
 	@Override
-	public int insert(RecipeList recipelist) {
+	public int insert(RecipeMain recipemain) {
 		int result = 0;
 		
 		Connection conn = null;
@@ -139,12 +140,10 @@ public class RecipeListDaoImpl implements RecipeListDao {
 			conn = getConnection();
 			
 			stmt = conn.prepareStatement(SQL_INSERT);
-			stmt.setString(1, recipelist.getProductName());
-			stmt.setString(2, recipelist.getProductGroup());
-			stmt.setString(3, recipelist.getIngredientName());
-			stmt.setInt(4, recipelist.getProductWeight());
-			stmt.setString(5, recipelist.getEctText());
-			stmt.setString(6, recipelist.getCookingMethod());
+			stmt.setString(1, recipemain.getProductName());
+			stmt.setString(2, recipemain.getProductClass());
+			stmt.setString(3, recipemain.getEctIngre());
+			stmt.setString(4, recipemain.getMainContent());
 			
 			result = stmt.executeUpdate();
 			
@@ -161,7 +160,7 @@ public class RecipeListDaoImpl implements RecipeListDao {
 	}
 
 	@Override
-	public int update(RecipeList recipelist) {
+	public int update(RecipeMain recipemain) {
 		int result = 0;
 		
 		Connection conn =null;
@@ -171,13 +170,14 @@ public class RecipeListDaoImpl implements RecipeListDao {
 			conn = getConnection();
 			
 			stmt = conn.prepareStatement(SQL_UPDATE);
-			stmt.setString(1, recipelist.getProductName());
-			stmt.setString(2, recipelist.getProductGroup());
-			stmt.setString(3, recipelist.getIngredientName());
-			stmt.setInt(4, recipelist.getProductWeight());
-			stmt.setString(5, recipelist.getEctText());
-			stmt.setString(6, recipelist.getCookingMethod());
-			stmt.setInt(7, recipelist.getProductNo());
+			stmt.setString(1, recipemain.getProductName());
+			stmt.setString(2, recipemain.getProductClass());
+			stmt.setString(3, recipemain.getEctIngre());
+			stmt.setString(4, recipemain.getMainContent());
+			stmt.setInt(5, recipemain.getProductNo());
+			
+			result = stmt.executeUpdate();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -217,5 +217,6 @@ public class RecipeListDaoImpl implements RecipeListDao {
 		
 		return result;
 	}
+
 
 }
