@@ -124,8 +124,11 @@ public class ListUpdateFrame extends JFrame {
 	}
 
 	private void initialize() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 800, 650);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+		int x = parent.getX();
+		int y = parent.getY();
+		setBounds(x, y, 800, 650);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -143,6 +146,7 @@ public class ListUpdateFrame extends JFrame {
 		contentPane.add(scrollPane_1);
 		
 		textContent = new JTextArea();
+		textContent.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		scrollPane_1.setViewportView(textContent);
 		
 		JButton btnCreate = new JButton("저 장");

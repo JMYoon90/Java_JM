@@ -197,6 +197,7 @@ public class ListCreateFrame extends JFrame {
 		contentPane.add(scrollPane_1);
 		
 		textContent = new JTextArea();
+		textContent.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		scrollPane_1.setViewportView(textContent);
 		
 		JButton btnCreate = new JButton("저 장");
@@ -261,7 +262,7 @@ public class ListCreateFrame extends JFrame {
 		btnSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				searchBlogsByKeyword();
+				searchIngreByKeyword();
 			}
 		});
 		btnSearch.setFont(new Font("맑은 고딕", Font.BOLD, 16));
@@ -269,7 +270,7 @@ public class ListCreateFrame extends JFrame {
 		contentPane.add(btnSearch);
 	}
 
-	private void searchBlogsByKeyword() {
+	private void searchIngreByKeyword() {
 		String keyword = textProduct.getText();
 		if(keyword.equals("")) {
 			return;
@@ -327,7 +328,7 @@ public class ListCreateFrame extends JFrame {
 		}
 	}
 
-	protected void addIngre() {
+	private void addIngre() {
 		String pname = textProduct.getText();
 		String iname = textIngredient.getText();
 		Integer iweight = Integer.parseInt(textWeight.getText());

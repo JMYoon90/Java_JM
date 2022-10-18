@@ -23,10 +23,12 @@ import javax.swing.JTable;
 import static recipelist.model.RecipeMain.Entity.*;
 import javax.swing.JComboBox;
 
+import recipelist.view.FoodCostFrame.OnCostlistInsertListener;
+import recipelist.view.IpriceCal.OnIpriceCalListener;
 import recipelist.view.ListCreateFrame.OnListInsertListener;
 import recipelist.view.ListUpdateFrame.OnRecipeUpdateListener;
 
-public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
+public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, OnCostlistInsertListener, OnIpriceCalListener {
 	private static final String[] COLUMN_NAMES = {
 			COL_PRODUCT_NO, COL_PRODUCT_NAME, COL_PRODUCT_CLASS, COL_MODIFIED_DATE
 	};
@@ -93,12 +95,18 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
 				ListCreateFrame.newListCreateFrame(frame, RelMain.this);
 			}
 		});
-		btnCreateRecipe.setFont(new Font("D2Coding", Font.PLAIN, 13));
+		btnCreateRecipe.setFont(new Font("D2Coding", Font.PLAIN, 12));
 		btnCreateRecipe.setBounds(32, 21, 130, 25);
 		frame.getContentPane().add(btnCreateRecipe);
 		
 		JButton btnCostCreate = new JButton("가격표작성");
-		btnCostCreate.setFont(new Font("D2Coding", Font.PLAIN, 13));
+		btnCostCreate.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				FoodCostFrame.newCostlistCreateFrame(frame, RelMain.this);
+			}
+		});
+		btnCostCreate.setFont(new Font("D2Coding", Font.PLAIN, 12));
 		btnCostCreate.setBounds(32, 56, 130, 25);
 		frame.getContentPane().add(btnCostCreate);
 		
@@ -109,18 +117,9 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
 				showDetailFrame();
 			}
 		});
-		btnDetailRecipe.setFont(new Font("D2Coding", Font.PLAIN, 13));
+		btnDetailRecipe.setFont(new Font("D2Coding", Font.PLAIN, 12));
 		btnDetailRecipe.setBounds(174, 21, 130, 25);
 		frame.getContentPane().add(btnDetailRecipe);
-		
-		JButton btnDetailCost = new JButton("가격표 상세보기");
-		btnDetailCost.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		btnDetailCost.setFont(new Font("D2Coding", Font.PLAIN, 13));
-		btnDetailCost.setBounds(174, 56, 130, 25);
-		frame.getContentPane().add(btnDetailCost);
 		
 		JButton btnDelete = new JButton("삭  제");
 		btnDelete.addActionListener(new ActionListener() {
@@ -129,13 +128,18 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
 				deleteRecipe();
 			}
 		});
-		btnDelete.setFont(new Font("D2Coding", Font.PLAIN, 13));
-		btnDelete.setBounds(316, 56, 130, 25);
+		btnDelete.setFont(new Font("D2Coding", Font.PLAIN, 12));
+		btnDelete.setBounds(316, 21, 130, 25);
 		frame.getContentPane().add(btnDelete);
 		
 		JButton btncalculate = new JButton("단가계산기");
-		btncalculate.setFont(new Font("D2Coding", Font.PLAIN, 13));
-		btncalculate.setBounds(316, 21, 130, 25);
+		btncalculate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showIpriceFreme();
+			}
+		});
+		btncalculate.setFont(new Font("D2Coding", Font.PLAIN, 12));
+		btncalculate.setBounds(174, 56, 130, 25);
 		frame.getContentPane().add(btncalculate);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -163,7 +167,24 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
 		panel.add(btnNewButton);
 	}
 
-	protected void showDetailFrame() {
+	protected void showIpriceFreme() {
+		int row = table.getSelectedRow();
+		if(row == -1) {
+			JOptionPane.showMessageDialog(frame,
+					"계산할 레시피를 선택하세요.",
+					"Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		
+		Integer listNo = (Integer) model.getValueAt(row, 0);
+		
+		IpriceCal.IpriceCalFrame(frame,listNo, RelMain.this);
+		
+		
+	}
+
+	private void showDetailFrame() {
 		int row = table.getSelectedRow();
 		if(row == -1) {
 			JOptionPane.showMessageDialog(frame,
@@ -221,5 +242,13 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener {
 	@Override
 	public void OnRecipeUpdated() {
 		initializeTable();
+	}
+
+	@Override
+	public void OnCostlistInserted() {
+	}
+
+	@Override
+	public void OnIpriceCal() {
 	}
 }

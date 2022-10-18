@@ -2,7 +2,6 @@ package recipelist.controller;
 
 import java.util.List;
 import recipelist.model.RecipeIngre;
-import recipelist.model.RecipeMain;
 
 public interface RecipeIngreDao {
 	
