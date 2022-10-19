@@ -47,7 +47,6 @@ public class IpriceCal extends JFrame {
 	private OnIpriceCalListener listener;
 	private Component parent;
 	private JButton btnCreate;
-	private int sum;
 
 	/**
 	 * Launch the application.
@@ -79,6 +78,8 @@ public class IpriceCal extends JFrame {
 		
 		initializeTable();
 		
+		searchRecipeByKeyword();
+		
 	}
 	
 	private void initializeTable() {
@@ -96,7 +97,7 @@ public class IpriceCal extends JFrame {
 		
 		int x = parent.getX();
 		int y = parent.getY();
-		setBounds(x, y, 450, 600);
+		setBounds(x, y, 450, 650);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -126,28 +127,30 @@ public class IpriceCal extends JFrame {
 		contentPane.add(lblNewLabel);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 50, 410, 413);
+		scrollPane.setBounds(12, 50, 410, 450);
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
+		table.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+		table.setRowHeight(25);
 		scrollPane.setViewportView(table);
 		
 		textResult = new JTextField();
 		textResult.setText("레시피 단가 합계 = ");
-		textResult.setHorizontalAlignment(SwingConstants.CENTER);
+		textResult.setHorizontalAlignment(SwingConstants.RIGHT);
 		textResult.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		textResult.setEditable(false);
 		textResult.setColumns(10);
-		textResult.setBounds(12, 473, 253, 30);
+		textResult.setBounds(12, 515, 253, 30);
 		contentPane.add(textResult);
 		
 		textSum = new JTextField();
-		System.out.println(sum + "원");
-		textSum.setText(sum + "원");
+		textSum.setHorizontalAlignment(SwingConstants.CENTER);
+		textSum.setText("0원");
 		textSum.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		textSum.setEditable(false);
 		textSum.setColumns(10);
-		textSum.setBounds(277, 473, 145, 30);
+		textSum.setBounds(277, 515, 145, 30);
 		contentPane.add(textSum);
 		
 		btnCreate = new JButton("확  인");
@@ -158,7 +161,7 @@ public class IpriceCal extends JFrame {
 			}
 		});
 		btnCreate.setFont(new Font("맑은 고딕", Font.BOLD, 18));
-		btnCreate.setBounds(322, 516, 100, 35);
+		btnCreate.setBounds(322, 560, 100, 35);
 		contentPane.add(btnCreate);
 	}
 
@@ -169,10 +172,9 @@ public class IpriceCal extends JFrame {
 		}
 		
 		List<recipelist.model.IpriceCal> list = dao.select(keyword);
-		System.out.println("list size = " + list.size());
-		
 		model = new DefaultTableModel(null, COLUMN_NAMES);
 		table.setModel(model);
+		int sum = 0;
 		for(recipelist.model.IpriceCal i : list) {
 			Object[] row = {
 					i.getIngrename(), i.getWeight(), i.getPrice()
@@ -180,7 +182,7 @@ public class IpriceCal extends JFrame {
 			sum = sum + i.getPrice();
 			model.addRow(row);
 		}
-		System.out.println(sum);
+		textSum.setText(sum + "원");
 	}
 
 }

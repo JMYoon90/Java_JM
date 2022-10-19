@@ -177,5 +177,70 @@ public class RecipeIngreDaoImpl implements RecipeIngreDao {
 		return result;
 	}
 
+	@Override
+	public List<RecipeIngre> select(String productName, String IngreName) {
+		List<RecipeIngre> list = new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			stmt = conn.prepareStatement(SQL_SELECT_BY_PNAME_AND_INAME);
+			stmt.setString(1, productName);
+			stmt.setString(2, IngreName);
+			
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				Integer ingreIndex = rs.getInt(COL_INGRE_INDEX);
+				String ingreName = rs.getString(COL_INGRE_NAME);
+				Integer ingreWeight = rs.getInt(COL_INGRE_WEIGHT);
+				String pName = rs.getString(COL_PRODUCT_NAME);
+				
+				RecipeIngre recipeingre = new RecipeIngre(ingreIndex, ingreName, ingreWeight, pName);
+				list.add(recipeingre);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeResources(conn, stmt, rs);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public int update(RecipeIngre recipeingre) {
+		int result = 0;
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		
+		try {
+			conn = getConnection();
+			
+			stmt = conn.prepareStatement(SQL_UPDATE);
+			stmt.setString(1, recipeingre.getIngreName());
+			stmt.setDouble(2, recipeingre.getIngreWeight());
+			stmt.setString(3, recipeingre.getpName());
+			stmt.setString(4, recipeingre.getIngreName());
+			
+			result = stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				closeResources(conn, stmt);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+
 
 }

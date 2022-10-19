@@ -218,5 +218,47 @@ public class RecipeMainDaoImpl implements RecipeMainDao {
 		return result;
 	}
 
+	@Override
+	public List<RecipeMain> select(int type, String keyword) {
+		List<RecipeMain> list = new ArrayList<>();
+		
+		Connection conn = null;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = getConnection();
+			
+			switch (type) {
+			case 0:
+				stmt = conn.prepareStatement(SQL_SELECT_BY_RECIPE);
+				stmt.setString(1, "%" + keyword.toLowerCase() + "%");
+				break;
+			case 1:
+				stmt = conn.prepareStatement(SQL_SELECT_BY_CLASS);
+				stmt.setString(1, "%" + keyword + "%");
+				break;
+			default:
+			}
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				
+				Integer productNo = rs.getInt(COL_PRODUCT_NO);
+				String productName = rs.getString(COL_PRODUCT_NAME);
+				String productClass = rs.getString(COL_PRODUCT_CLASS);
+				LocalDateTime modifiedDate = rs.getTimestamp(COL_MODIFIED_DATE).toLocalDateTime();
+				String ectText = rs.getString(COL_ETC_INGRE);
+				String cookingMethod = rs.getString(COL_MAIN_CONTENT);
+				
+				RecipeMain recipemain = new RecipeMain(productNo, productName, productClass, modifiedDate, ectText, cookingMethod);
+				list.add(recipemain);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+
 
 }

@@ -35,4 +35,14 @@ public interface RecipeMainSql {
 			"delete from %s where %s = ?",
 			TBL_RECIPEMAIN, COL_PRODUCT_NO);
 	
+	// 레시피명으로 검색하기
+	String SQL_SELECT_BY_RECIPE = String.format(
+			"select * from %s where lower(%s) like ? order by %s",
+			TBL_RECIPEMAIN, COL_PRODUCT_NAME, COL_PRODUCT_NO);
+	
+	// 분류로 검색하기
+	String SQL_SELECT_BY_CLASS = String.format(
+			"select * from %s where %s like ? order by %s",
+			TBL_RECIPEMAIN, COL_PRODUCT_CLASS, COL_PRODUCT_NO);
+	
 }

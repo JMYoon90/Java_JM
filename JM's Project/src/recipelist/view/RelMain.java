@@ -15,6 +15,7 @@ import recipelist.controller.RecipeMainDaoImpl;
 import recipelist.model.RecipeMain;
 
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
@@ -27,6 +28,7 @@ import recipelist.view.FoodCostFrame.OnCostlistInsertListener;
 import recipelist.view.IpriceCal.OnIpriceCalListener;
 import recipelist.view.ListCreateFrame.OnListInsertListener;
 import recipelist.view.ListUpdateFrame.OnRecipeUpdateListener;
+import javax.swing.DefaultComboBoxModel;
 
 public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, OnCostlistInsertListener, OnIpriceCalListener {
 	private static final String[] COLUMN_NAMES = {
@@ -38,6 +40,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	private JTextField textKeyword;
 	private RecipeMainDaoImpl dao;
 	private DefaultTableModel model;
+	private JComboBox<String> comboBox;
 	
 
 	/**
@@ -85,7 +88,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 500, 650);
+		frame.setBounds(100, 100, 800, 650);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -95,8 +98,8 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 				ListCreateFrame.newListCreateFrame(frame, RelMain.this);
 			}
 		});
-		btnCreateRecipe.setFont(new Font("D2Coding", Font.PLAIN, 12));
-		btnCreateRecipe.setBounds(32, 21, 130, 25);
+		btnCreateRecipe.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+		btnCreateRecipe.setBounds(12, 20, 140, 40);
 		frame.getContentPane().add(btnCreateRecipe);
 		
 		JButton btnCostCreate = new JButton("가격표작성");
@@ -106,19 +109,19 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 				FoodCostFrame.newCostlistCreateFrame(frame, RelMain.this);
 			}
 		});
-		btnCostCreate.setFont(new Font("D2Coding", Font.PLAIN, 12));
-		btnCostCreate.setBounds(32, 56, 130, 25);
+		btnCostCreate.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+		btnCostCreate.setBounds(322, 20, 140, 40);
 		frame.getContentPane().add(btnCostCreate);
 		
-		JButton btnDetailRecipe = new JButton("레시피 상세보기");
+		JButton btnDetailRecipe = new JButton("상세보기");
 		btnDetailRecipe.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showDetailFrame();
 			}
 		});
-		btnDetailRecipe.setFont(new Font("D2Coding", Font.PLAIN, 12));
-		btnDetailRecipe.setBounds(174, 21, 130, 25);
+		btnDetailRecipe.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+		btnDetailRecipe.setBounds(167, 20, 140, 40);
 		frame.getContentPane().add(btnDetailRecipe);
 		
 		JButton btnDelete = new JButton("삭  제");
@@ -128,8 +131,8 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 				deleteRecipe();
 			}
 		});
-		btnDelete.setFont(new Font("D2Coding", Font.PLAIN, 12));
-		btnDelete.setBounds(316, 21, 130, 25);
+		btnDelete.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+		btnDelete.setBounds(632, 20, 140, 40);
 		frame.getContentPane().add(btnDelete);
 		
 		JButton btncalculate = new JButton("단가계산기");
@@ -138,22 +141,38 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 				showIpriceFreme();
 			}
 		});
-		btncalculate.setFont(new Font("D2Coding", Font.PLAIN, 12));
-		btncalculate.setBounds(174, 56, 130, 25);
+		btncalculate.setFont(new Font("맑은 고딕", Font.BOLD, 18));
+		btncalculate.setBounds(477, 20, 140, 40);
 		frame.getContentPane().add(btncalculate);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(22, 110, 440, 442);
+		scrollPane.setBounds(12, 70, 760, 482);
 		frame.getContentPane().add(scrollPane);
 		
 		table = new JTable();
+		table.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		table.setRowHeight(30);
 		scrollPane.setViewportView(table);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(22, 562, 440, 39);
+		panel.setBounds(12, 562, 760, 39);
 		frame.getContentPane().add(panel);
 		
-		JComboBox comboBox = new JComboBox();
+		JButton btnSearch_1 = new JButton("초기화");
+		btnSearch_1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				initializeTable();
+				textKeyword.setText(null);
+				
+			}
+		});
+		btnSearch_1.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+		panel.add(btnSearch_1);
+		
+		comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"이름", "분류"}));
+		comboBox.setSelectedIndex(0);
 		comboBox.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
 		panel.add(comboBox);
 		
@@ -162,9 +181,38 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		panel.add(textKeyword);
 		textKeyword.setColumns(10);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
-		panel.add(btnNewButton);
+		JButton btnSearch = new JButton("검  색");
+		btnSearch.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				searchRecipeKeyword();
+			}
+		});
+		btnSearch.setFont(new Font("맑은 고딕", Font.PLAIN, 13));
+		panel.add(btnSearch);
+	}
+
+	protected void searchRecipeKeyword() {
+		String keyword = textKeyword.getText();
+		if(keyword.equals("")) { // 검색어 JTextField가 비어 있으면
+    		JOptionPane.showMessageDialog(frame, // parentComponent
+    				"검색어를 입력하세요.", // message
+    				"Warning", // title
+    				JOptionPane.WARNING_MESSAGE); // messageType
+    		return;
+		}
+		int type = comboBox.getSelectedIndex();
+		List<RecipeMain> list = dao.select(type, keyword);
+		
+		model = new DefaultTableModel(null, COLUMN_NAMES);
+		table.setModel(model);
+		for (RecipeMain r : list) {
+			Object[] row = {
+					r.getProductNo(), r.getProductName(), r.getProductClass(), r.getModifiedDate()
+			};
+			model.addRow(row);
+		}
+		
 	}
 
 	protected void showIpriceFreme() {

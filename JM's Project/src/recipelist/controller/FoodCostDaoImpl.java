@@ -63,8 +63,8 @@ public class FoodCostDaoImpl implements FoodCostDao {
 			while(rs.next()) {
 				Integer fNo = rs.getInt(COL_FOOD_NO);
 				String fName = rs.getString(COL_FOOD_NAME);
-				Integer fCost = rs.getInt(COL_FOODCOST);
-				Integer fprice = rs.getInt(COL_PRICE_FOR_G);
+				Double fCost = rs.getDouble(COL_FOODCOST);
+				Double fprice = rs.getDouble(COL_PRICE_FOR_G);
 				LocalDateTime modifiedDate = rs.getTimestamp(COL_MODIFIED_DATE).toLocalDateTime();
 				Integer fWeight = rs.getInt(COL_FOOD_WEIGHT);
 				
@@ -102,8 +102,8 @@ public class FoodCostDaoImpl implements FoodCostDao {
 			while(rs.next()) {
 				Integer fNo = rs.getInt(COL_FOOD_NO);
 				String fName = rs.getString(COL_FOOD_NAME);
-				Integer fCost = rs.getInt(COL_FOODCOST);
-				Integer fprice = rs.getInt(COL_PRICE_FOR_G);
+				Double fCost = rs.getDouble(COL_FOODCOST);
+				Double fprice = rs.getDouble(COL_PRICE_FOR_G);
 				LocalDateTime modifiedDate = rs.getTimestamp(COL_MODIFIED_DATE).toLocalDateTime();
 				Integer fWeight = rs.getInt(COL_FOOD_WEIGHT);
 				
@@ -135,7 +135,7 @@ public class FoodCostDaoImpl implements FoodCostDao {
 			stmt = conn.prepareStatement(SQL_INSERT);
 			stmt.setString(1, foodcost.getFoodName());
 			stmt.setInt(2, foodcost.getfWeight());
-			stmt.setInt(3, foodcost.getFoodCost());
+			stmt.setDouble(3, foodcost.getFoodCost());
 			stmt.setDouble(4, foodcost.getPriceForG());
 			
 			
@@ -209,7 +209,7 @@ public class FoodCostDaoImpl implements FoodCostDao {
 			
 			stmt = conn.prepareStatement(SQL_UPDATE);
 			stmt.setInt(1, foodcost.getfWeight());
-			stmt.setInt(2, foodcost.getFoodCost());
+			stmt.setDouble(2, foodcost.getFoodCost());
 			stmt.setDouble(3, foodcost.getPriceForG());
 			stmt.setString(4, foodcost.getFoodName());
 			

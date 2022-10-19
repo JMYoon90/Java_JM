@@ -14,6 +14,7 @@ import javax.swing.table.DefaultTableModel;
 
 import recipelist.controller.RecipeIngreDaoImpl;
 import recipelist.controller.RecipeMainDaoImpl;
+import recipelist.model.FoodCost;
 import recipelist.model.RecipeIngre;
 import recipelist.model.RecipeMain;
 
@@ -91,8 +92,25 @@ public class ListUpdateFrame extends JFrame {
 		
 		initializeListData();
 		
-		initializeTable();
+		searchIngreByKeyword();
 		
+	}
+	
+	private void searchIngreByKeyword() {
+		String keyword = textProduct.getText();
+		if(keyword.equals("")) {
+			return;
+		}
+		List<RecipeIngre> list = ingre_Dao.select(keyword);
+		
+		model = new DefaultTableModel(null, COLUMN_NAMES);
+		table.setModel(model);
+		for(RecipeIngre r : list) {
+			Object[] row = {
+					r.getiIndex(), r.getIngreName(),r.getIngreWeight()
+			};
+			model.addRow(row);
+		}
 	}
 	
 	
@@ -135,14 +153,14 @@ public class ListUpdateFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblEtc_1 = new JLabel("만드는법( 판서 )");
+		JLabel lblEtc_1 = new JLabel("    만드는법");
 		lblEtc_1.setHorizontalAlignment(SwingConstants.LEFT);
 		lblEtc_1.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		lblEtc_1.setBounds(398, 50, 374, 30);
+		lblEtc_1.setBounds(398, 90, 374, 30);
 		contentPane.add(lblEtc_1);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(398, 90, 374, 465);
+		scrollPane_1.setBounds(398, 130, 374, 425);
 		contentPane.add(scrollPane_1);
 		
 		textContent = new JTextArea();
@@ -174,24 +192,24 @@ public class ListUpdateFrame extends JFrame {
 		JLabel lblProduct = new JLabel("제품명");
 		lblProduct.setHorizontalAlignment(SwingConstants.CENTER);
 		lblProduct.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		lblProduct.setBounds(12, 10, 100, 30);
+		lblProduct.setBounds(12, 10, 90, 30);
 		contentPane.add(lblProduct);
 		
 		textProduct = new JTextField();
 		textProduct.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		textProduct.setColumns(10);
-		textProduct.setBounds(114, 10, 180, 30);
+		textProduct.setBounds(103, 10, 150, 30);
 		contentPane.add(textProduct);
 		
-		JButton btnSearch = new JButton("검색");
+		JButton btnSearch = new JButton("검색/초기화");
 		btnSearch.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				searchBlogsByKeyword();
 			}
 		});
-		btnSearch.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		btnSearch.setBounds(304, 10, 80, 30);
+		btnSearch.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		btnSearch.setBounds(265, 11, 110, 30);
 		contentPane.add(btnSearch);
 		
 		JLabel lblGroup = new JLabel("분류");
@@ -210,66 +228,60 @@ public class ListUpdateFrame extends JFrame {
 		JLabel lblModifiedDate = new JLabel("작성일");
 		lblModifiedDate.setHorizontalAlignment(SwingConstants.CENTER);
 		lblModifiedDate.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		lblModifiedDate.setBounds(634, 10, 80, 30);
+		lblModifiedDate.setBounds(409, 50, 80, 30);
 		contentPane.add(lblModifiedDate);
 		
 		textModifiedDate = new JTextField();
 		textModifiedDate.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		textModifiedDate.setEditable(false);
 		textModifiedDate.setColumns(10);
-		textModifiedDate.setBounds(634, 50, 138, 30);
+		textModifiedDate.setBounds(501, 50, 271, 30);
 		contentPane.add(textModifiedDate);
 		
-		JLabel lblEtc_1_1 = new JLabel("만드는법( 판서 )");
-		lblEtc_1_1.setHorizontalAlignment(SwingConstants.LEFT);
-		lblEtc_1_1.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		lblEtc_1_1.setBounds(398, 50, 374, 30);
-		contentPane.add(lblEtc_1_1);
-		
-		JButton btnCreate_1 = new JButton("추가");
+		JButton btnCreate_1 = new JButton("추  가");
 		btnCreate_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				addIngre();
 			}
 		});
-		btnCreate_1.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		btnCreate_1.setBounds(306, 50, 80, 30);
+		btnCreate_1.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		btnCreate_1.setBounds(265, 50, 110, 30);
 		contentPane.add(btnCreate_1);
 		
 		textIngredient = new JTextField();
 		textIngredient.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		textIngredient.setColumns(10);
-		textIngredient.setBounds(114, 50, 180, 30);
+		textIngredient.setBounds(103, 50, 150, 30);
 		contentPane.add(textIngredient);
 		
 		JLabel lblIngredient = new JLabel("재료명");
 		lblIngredient.setHorizontalAlignment(SwingConstants.CENTER);
 		lblIngredient.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		lblIngredient.setBounds(12, 50, 100, 30);
+		lblIngredient.setBounds(12, 50, 90, 30);
 		contentPane.add(lblIngredient);
 		
 		JLabel lblWeight = new JLabel("중량(g)");
 		lblWeight.setHorizontalAlignment(SwingConstants.CENTER);
 		lblWeight.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		lblWeight.setBounds(12, 90, 100, 30);
+		lblWeight.setBounds(12, 90, 90, 30);
 		contentPane.add(lblWeight);
 		
 		textWeight = new JTextField();
 		textWeight.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		textWeight.setColumns(10);
-		textWeight.setBounds(114, 90, 180, 30);
+		textWeight.setBounds(103, 90, 150, 30);
 		contentPane.add(textWeight);
 		
-		JButton btnCreate_1_1 = new JButton("삭제");
+		JButton btnCreate_1_1 = new JButton("삭  제");
 		btnCreate_1_1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				deleteindex();
 			}
 		});
-		btnCreate_1_1.setFont(new Font("맑은 고딕", Font.BOLD, 16));
-		btnCreate_1_1.setBounds(306, 90, 80, 30);
+		btnCreate_1_1.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+		btnCreate_1_1.setBounds(265, 90, 110, 30);
 		contentPane.add(btnCreate_1_1);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
@@ -277,6 +289,7 @@ public class ListUpdateFrame extends JFrame {
 		contentPane.add(scrollPane_2);
 		
 		table = new JTable();
+		table.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
 		scrollPane_2.setViewportView(table);
 		
 		JLabel lblEtc = new JLabel("etc.");
@@ -290,7 +303,7 @@ public class ListUpdateFrame extends JFrame {
 		contentPane.add(scrollPane);
 		
 		textEtcIngre = new JTextArea();
-		textEtcIngre.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
+		textEtcIngre.setFont(new Font("맑은 고딕", Font.BOLD, 16));
 		scrollPane.setViewportView(textEtcIngre);
 	}
 
@@ -316,7 +329,7 @@ public class ListUpdateFrame extends JFrame {
         }
 	}
 
-	protected void deleteindex() {
+	private void deleteindex() {
 		int row = table.getSelectedRow();
 		if(row == -1) {
 			return;
@@ -331,9 +344,11 @@ public class ListUpdateFrame extends JFrame {
 				JOptionPane.showMessageDialog(contentPane, "삭제 실패", "Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
+		searchIngreByKeyword();
 	}
 
-	protected void addIngre() {
+	private void addIngre() {
+		if(countrow() == 0) {
 		String pname = textProduct.getText();
 		String iname = textIngredient.getText();
 		Integer iweight = Integer.parseInt(textWeight.getText());
@@ -341,13 +356,38 @@ public class ListUpdateFrame extends JFrame {
 		
 		int result = ingre_Dao.insert(recipeingre);
 		
-		initializeTable();
+		textIngredient.setText(null);
+		textWeight.setText(null);
+		searchIngreByKeyword();
+		} else {
+			String pname = textProduct.getText();
+			String iname = textIngredient.getText();
+			Integer iweight = Integer.parseInt(textWeight.getText());
+			RecipeIngre recipeingre = new RecipeIngre(null, iname, iweight, pname);
+			
+			ingre_Dao.update(recipeingre);
+			
+			textIngredient.setText(null);
+			textWeight.setText(null);
+			searchIngreByKeyword();
+		}
 
 	}
-
+	private int countrow() {
+		int result = 0;
+		String pNameKeyword = textProduct.getText();
+		String ingreKeyword = textIngredient.getText();
+		
+		List<RecipeIngre> list = ingre_Dao.select(pNameKeyword, ingreKeyword);
+		result = list.size();
+		
+		return result;
+	}
+	
 	protected void searchBlogsByKeyword() {
 		String keyword = textProduct.getText();
-		if(keyword.equals("")) {
+		if(keyword.equals(null)) {
+			initializeTable();
 			return;
 		}
 		List<RecipeIngre> list = ingre_Dao.select(keyword);

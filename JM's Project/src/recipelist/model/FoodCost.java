@@ -16,14 +16,14 @@ public class FoodCost {
 	
 	private Integer foodNo;
 	private String foodName;
-	private Integer foodCost;
+	private double foodCost;
 	private double priceForG;
 	private LocalDateTime modifiedDate;
 	private Integer fWeight;
 	
 	public FoodCost() {}
 
-	public FoodCost(Integer foodNo, String foodName, Integer foodCost, double priceForG, LocalDateTime modifiedDate,
+	public FoodCost(Integer foodNo, String foodName, double foodCost, double priceForG, LocalDateTime modifiedDate,
 			Integer fWeight) {
 		super();
 		this.foodNo = foodNo;
@@ -42,7 +42,7 @@ public class FoodCost {
 		return foodName;
 	}
 
-	public Integer getFoodCost() {
+	public double getFoodCost() {
 		return foodCost;
 	}
 

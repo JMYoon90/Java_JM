@@ -11,4 +11,7 @@ public interface RecipeMainDao {
 	int insert(RecipeMain reciperemain);
 	int update(RecipeMain recipremain);
 	int delete(Integer productNo);
+	
+	
+	List<RecipeMain> select(int type, String keyword);
 }
