@@ -228,6 +228,7 @@ public class ListCreateFrame extends JFrame {
 		contentPane.add(scrollPane_2);
 		
 		table = new JTable();
+		table.setAutoCreateRowSorter(true);
 		scrollPane_2.setViewportView(table);
 		
 		JButton btnCreate_1 = new JButton("추  가");

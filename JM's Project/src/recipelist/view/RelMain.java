@@ -35,7 +35,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 			COL_PRODUCT_NO, COL_PRODUCT_NAME, COL_PRODUCT_CLASS, COL_MODIFIED_DATE
 	};
 
-	private JFrame frame;
+	private JFrame frmVer;
 	private JTable table;
 	private JTextField textKeyword;
 	private RecipeMainDaoImpl dao;
@@ -51,7 +51,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 			public void run() {
 				try {
 					RelMain window = new RelMain();
-					window.frame.setVisible(true);
+					window.frmVer.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -87,31 +87,32 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 800, 650);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmVer = new JFrame();
+		frmVer.setTitle("레시피 저장소 ver 0.1");
+		frmVer.setBounds(100, 100, 800, 650);
+		frmVer.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmVer.getContentPane().setLayout(null);
 		
 		JButton btnCreateRecipe = new JButton("레시피작성");
 		btnCreateRecipe.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ListCreateFrame.newListCreateFrame(frame, RelMain.this);
+				ListCreateFrame.newListCreateFrame(frmVer, RelMain.this);
 			}
 		});
 		btnCreateRecipe.setFont(new Font("맑은 고딕", Font.BOLD, 18));
 		btnCreateRecipe.setBounds(12, 20, 140, 40);
-		frame.getContentPane().add(btnCreateRecipe);
+		frmVer.getContentPane().add(btnCreateRecipe);
 		
 		JButton btnCostCreate = new JButton("가격표작성");
 		btnCostCreate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				FoodCostFrame.newCostlistCreateFrame(frame, RelMain.this);
+				FoodCostFrame.newCostlistCreateFrame(frmVer, RelMain.this);
 			}
 		});
 		btnCostCreate.setFont(new Font("맑은 고딕", Font.BOLD, 18));
 		btnCostCreate.setBounds(322, 20, 140, 40);
-		frame.getContentPane().add(btnCostCreate);
+		frmVer.getContentPane().add(btnCostCreate);
 		
 		JButton btnDetailRecipe = new JButton("상세보기");
 		btnDetailRecipe.addActionListener(new ActionListener() {
@@ -122,7 +123,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		});
 		btnDetailRecipe.setFont(new Font("맑은 고딕", Font.BOLD, 18));
 		btnDetailRecipe.setBounds(167, 20, 140, 40);
-		frame.getContentPane().add(btnDetailRecipe);
+		frmVer.getContentPane().add(btnDetailRecipe);
 		
 		JButton btnDelete = new JButton("삭  제");
 		btnDelete.addActionListener(new ActionListener() {
@@ -133,7 +134,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		});
 		btnDelete.setFont(new Font("맑은 고딕", Font.BOLD, 18));
 		btnDelete.setBounds(632, 20, 140, 40);
-		frame.getContentPane().add(btnDelete);
+		frmVer.getContentPane().add(btnDelete);
 		
 		JButton btncalculate = new JButton("단가계산기");
 		btncalculate.addActionListener(new ActionListener() {
@@ -143,20 +144,21 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		});
 		btncalculate.setFont(new Font("맑은 고딕", Font.BOLD, 18));
 		btncalculate.setBounds(477, 20, 140, 40);
-		frame.getContentPane().add(btncalculate);
+		frmVer.getContentPane().add(btncalculate);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(12, 70, 760, 482);
-		frame.getContentPane().add(scrollPane);
+		frmVer.getContentPane().add(scrollPane);
 		
 		table = new JTable();
+		table.setAutoCreateRowSorter(true);
 		table.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
 		table.setRowHeight(30);
 		scrollPane.setViewportView(table);
 		
 		JPanel panel = new JPanel();
 		panel.setBounds(12, 562, 760, 39);
-		frame.getContentPane().add(panel);
+		frmVer.getContentPane().add(panel);
 		
 		JButton btnSearch_1 = new JButton("초기화");
 		btnSearch_1.addActionListener(new ActionListener() {
@@ -195,7 +197,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	protected void searchRecipeKeyword() {
 		String keyword = textKeyword.getText();
 		if(keyword.equals("")) { // 검색어 JTextField가 비어 있으면
-    		JOptionPane.showMessageDialog(frame, // parentComponent
+    		JOptionPane.showMessageDialog(frmVer, // parentComponent
     				"검색어를 입력하세요.", // message
     				"Warning", // title
     				JOptionPane.WARNING_MESSAGE); // messageType
@@ -218,7 +220,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	protected void showIpriceFreme() {
 		int row = table.getSelectedRow();
 		if(row == -1) {
-			JOptionPane.showMessageDialog(frame,
+			JOptionPane.showMessageDialog(frmVer,
 					"계산할 레시피를 선택하세요.",
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -227,7 +229,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		
 		Integer listNo = (Integer) model.getValueAt(row, 0);
 		
-		IpriceCal.IpriceCalFrame(frame,listNo, RelMain.this);
+		IpriceCal.IpriceCalFrame(frmVer,listNo, RelMain.this);
 		
 		
 	}
@@ -235,8 +237,8 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	private void showDetailFrame() {
 		int row = table.getSelectedRow();
 		if(row == -1) {
-			JOptionPane.showMessageDialog(frame,
-					"수정할 레시피를 선택하세요.",
+			JOptionPane.showMessageDialog(frmVer,
+					"레시피를 선택하세요.",
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
 			return;
@@ -244,7 +246,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		
 		Integer listNo = (Integer) model.getValueAt(row, 0);
 		
-		ListUpdateFrame.newRecipeDetailFrame(frame, listNo, RelMain.this);
+		ListUpdateFrame.newRecipeDetailFrame(frmVer, listNo, RelMain.this);
 		
 		
 		
@@ -253,7 +255,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 	private void deleteRecipe() {
 		int row = table.getSelectedRow();
 		if(row == -1) {
-			JOptionPane.showMessageDialog(frame,
+			JOptionPane.showMessageDialog(frmVer,
 					"삭제할 행을 선택해 주세요.",
 					"Error",
 					JOptionPane.ERROR_MESSAGE);
@@ -262,7 +264,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		
 		Integer recipeNo = (Integer) model.getValueAt(row, 0);
 		
-		int confirm = JOptionPane.showConfirmDialog(frame,
+		int confirm = JOptionPane.showConfirmDialog(frmVer,
 				 recipeNo + "번 레시피를 정말 삭제할까요?",
 				"삭제 확인",
 				JOptionPane.YES_NO_OPTION);
@@ -270,10 +272,10 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		if (confirm == JOptionPane.YES_OPTION) {
 			int result = dao.delete(recipeNo);
 			if (result == 1) {
-				JOptionPane.showMessageDialog(frame, recipeNo + "번 레시피 삭제 성공");
+				JOptionPane.showMessageDialog(frmVer, recipeNo + "번 레시피 삭제 성공");
 				initializeTable();
 			} else {
-				JOptionPane.showMessageDialog(frame,
+				JOptionPane.showMessageDialog(frmVer,
 						"레시피 삭제 실패",
 						"Error",
 						JOptionPane.ERROR_MESSAGE);

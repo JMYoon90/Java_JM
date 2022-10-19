@@ -92,7 +92,7 @@ public class FoodCostFrame extends JFrame {
 	}
 
 	private void initialize() {
-		setTitle("재료가격표");
+		setTitle("재료 가격표");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		int x = parent.getX();
@@ -159,6 +159,7 @@ public class FoodCostFrame extends JFrame {
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
+		table.setAutoCreateRowSorter(true);
 		table.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
 		table.setRowHeight(25);
 		scrollPane.setViewportView(table);
@@ -290,6 +291,7 @@ public class FoodCostFrame extends JFrame {
 					c.getFoodNo(), c.getFoodName(), c.getfWeight(), c.getFoodCost()
 			};
 			model.addRow(row);
+			textIngreName.setText(null);
 		}
 	}
 	private int countrow() {

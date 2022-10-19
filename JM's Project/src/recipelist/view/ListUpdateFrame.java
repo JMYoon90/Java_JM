@@ -82,6 +82,7 @@ public class ListUpdateFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public ListUpdateFrame(Component parent, Integer listNo, OnRecipeUpdateListener listener) {
+		setTitle("레시피 수정 및 상세보기");
 		this.ingre_Dao = RecipeIngreDaoImpl.getInstance();
 		this.main_Dao = RecipeMainDaoImpl.getInstance();
 		this.listNo = listNo;
@@ -289,6 +290,7 @@ public class ListUpdateFrame extends JFrame {
 		contentPane.add(scrollPane_2);
 		
 		table = new JTable();
+		table.setAutoCreateRowSorter(true);
 		table.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
 		scrollPane_2.setViewportView(table);
 		

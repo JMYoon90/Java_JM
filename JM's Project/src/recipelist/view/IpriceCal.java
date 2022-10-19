@@ -68,6 +68,7 @@ public class IpriceCal extends JFrame {
 	 * Create the frame.
 	 */
 	public IpriceCal(Component parent, Integer listNo, OnIpriceCalListener listener) {
+		setTitle("레시피 재료 단가 계산기");
 		this.dao = IpriceCalDaoImpl.getInstance();
 		this.main_Dao = RecipeMainDaoImpl.getInstance();
 		this.listNo = listNo;
@@ -131,6 +132,7 @@ public class IpriceCal extends JFrame {
 		contentPane.add(scrollPane);
 		
 		table = new JTable();
+		table.setAutoCreateRowSorter(true);
 		table.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
 		table.setRowHeight(25);
 		scrollPane.setViewportView(table);
