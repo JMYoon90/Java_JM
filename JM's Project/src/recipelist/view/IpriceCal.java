@@ -68,6 +68,7 @@ public class IpriceCal extends JFrame {
 	 * Create the frame.
 	 */
 	public IpriceCal(Component parent, Integer listNo, OnIpriceCalListener listener) {
+		setTitle("재료원가 계산기");
 		this.dao = IpriceCalDaoImpl.getInstance();
 		this.main_Dao = RecipeMainDaoImpl.getInstance();
 		this.listNo = listNo;

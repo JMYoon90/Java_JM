@@ -103,7 +103,7 @@ public class RelMain implements OnListInsertListener, OnRecipeUpdateListener, On
 		btnCreateRecipe.setBounds(12, 20, 140, 40);
 		frmVer.getContentPane().add(btnCreateRecipe);
 		
-		JButton btnCostCreate = new JButton("가격표작성");
+		JButton btnCostCreate = new JButton("재료가격표");
 		btnCostCreate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
